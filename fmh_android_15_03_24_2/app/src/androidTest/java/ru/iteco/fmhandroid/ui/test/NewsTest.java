@@ -30,6 +30,7 @@ import org.junit.runner.RunWith;
 
 import java.util.UUID;
 
+import io.qameta.allure.android.runners.AllureAndroidJUnit4;
 import io.qameta.allure.kotlin.Description;
 import io.qameta.allure.kotlin.Epic;
 import ru.iteco.fmhandroid.R;
@@ -44,8 +45,8 @@ import ru.iteco.fmhandroid.ui.steps.Base;
 import static ru.iteco.fmhandroid.ui.steps.Base.withIndex;
 
 @LargeTest
-@RunWith(AndroidJUnit4.class)
-//@RunWith(AllureAndroidJUnit4.class)
+//@RunWith(AndroidJUnit4.class)
+@RunWith(AllureAndroidJUnit4.class)
 
 @Epic("Тестирование страницы новостей")
 

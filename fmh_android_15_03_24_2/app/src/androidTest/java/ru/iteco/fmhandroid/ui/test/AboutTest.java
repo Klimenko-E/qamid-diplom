@@ -29,6 +29,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import io.qameta.allure.android.runners.AllureAndroidJUnit4;
 import io.qameta.allure.kotlin.Description;
 import io.qameta.allure.kotlin.Epic;
 import ru.iteco.fmhandroid.R;
@@ -38,8 +39,8 @@ import ru.iteco.fmhandroid.ui.steps.mainPageSteps;
 import ru.iteco.fmhandroid.ui.steps.aboutPageSteps;
 
 @LargeTest
-@RunWith(AndroidJUnit4.class)
-//@RunWith(AllureAndroidJUnit4.class)
+//@RunWith(AndroidJUnit4.class)
+@RunWith(AllureAndroidJUnit4.class)
 
 @Epic("Тестирование страницы About")
 
@@ -82,20 +83,46 @@ public class AboutTest {
     }
 
     @Test
-    @Description("Переход на страницу About")
+    @Description("Открытие ссылки Privacy Politicy на странице About")
     public void goToPrivacyPolicy() {
         mainPageSteps.clickButtonMainMenu();
         mainPageSteps.clickButtonAboutMenu();
 
 
 
-        ViewInteraction clickUrlPrivacyPolicy = onView(
+        ViewInteraction clickPrivacyPolicy = onView(
                 allOf(withId(R.id.about_privacy_policy_value_text_view)));
-        clickUrlPrivacyPolicy.check(matches(isDisplayed()));
+        clickPrivacyPolicy.check(matches(isDisplayed()));
 
         Intents.init();
-        clickUrlPrivacyPolicy.perform(click());
+        clickPrivacyPolicy.perform(click());
         intended(hasData("https://vhospice.org/#/privacy-policy/"));
+        intended(hasAction(Intent.ACTION_VIEW));
+        Intents.release();
+
+
+        UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack();
+        ViewInteraction clickBack = onView(allOf(withId(R.id.about_back_image_button)));
+        clickBack.check(matches(isDisplayed()));
+        clickBack.perform(click());
+
+    }
+
+    @Test
+    @Description("Открытие ссылки Terms of use на странице About")
+    public void goToTermsOfUse() {
+        mainPageSteps.clickButtonMainMenu();
+        mainPageSteps.clickButtonAboutMenu();
+
+
+
+        ViewInteraction clickTermsOfUse = onView(
+                allOf(withId(R.id.about_terms_of_use_value_text_view)));
+        clickTermsOfUse.check(matches(isDisplayed()));
+
+        Intents.init();
+        clickTermsOfUse.perform(click());
+        intended(hasData("https://vhospice.org/#/terms-of-use"));
         intended(hasAction(Intent.ACTION_VIEW));
         Intents.release();
 

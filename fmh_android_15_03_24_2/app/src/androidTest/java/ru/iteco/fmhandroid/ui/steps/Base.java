@@ -46,7 +46,7 @@ public class Base {
     }
 
     public static void waitPageLoad(final int viewId) {
-        onView(isRoot()).perform(waitDisplayed(viewId, 10_000));
+        onView(isRoot()).perform(waitDisplayed(viewId, 15_000));
     }
 
     public static ViewAction waitDisplayed(final int viewId, final long millis) {

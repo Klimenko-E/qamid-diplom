@@ -8,75 +8,75 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
-import android.view.View;
 import android.widget.EditText;
 
-import androidx.test.espresso.PerformException;
-import androidx.test.espresso.UiController;
-import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.ViewInteraction;
-import androidx.test.espresso.util.HumanReadables;
-import androidx.test.espresso.util.TreeIterables;
-
-import org.hamcrest.Matcher;
-
-import java.util.concurrent.TimeoutException;
 
 import io.qameta.allure.kotlin.Allure;
 import ru.iteco.fmhandroid.R;
 
+public class AuthorizationPageSteps {
 
-public class authorizationPageSteps {
+    public static final int LOGIN_TEXT_INPUT_LAYOUT_ID = R.id.login_text_input_layout;
+    public static final int PASSWORD_TEXT_INPUT_LAYOUT_ID = R.id.password_text_input_layout;
+    public static final int ENTER_BUTTON_ID = R.id.enter_button;
+    public static final int AUTHORIZATION_IMAGE_BUTTON_ID = R.id.authorization_image_button;
 
-    public static void loginTextInupt(String login) {
+    public void loginTextInupt(String login) {
         Allure.step("Ввод логина");
         ViewInteraction loginInput = onView(
-                allOf(isDescendantOfA(withId(R.id.login_text_input_layout)),
+                allOf(isDescendantOfA(withId(LOGIN_TEXT_INPUT_LAYOUT_ID)),
                         isAssignableFrom(EditText.class)));
         loginInput.perform(replaceText(login), closeSoftKeyboard());
     }
 
-    public static void passwordTextInput(String password) {
+    public void passwordTextInput(String password) {
         Allure.step("Ввод пароля");
         ViewInteraction passwordInput = onView(
-                allOf(isDescendantOfA(withId(R.id.password_text_input_layout)),
+                allOf(isDescendantOfA(withId(PASSWORD_TEXT_INPUT_LAYOUT_ID)),
                         isAssignableFrom(EditText.class)));
         passwordInput.perform(replaceText(password), closeSoftKeyboard());
     }
 
-    public static void enterButtonLogIn() {
-        Allure.step("Нажатие кнопки атвторизации в программе");
-        ViewInteraction enterButton = onView(withId(R.id.enter_button));
+    public void enterButtonLogIn() {
+        Allure.step("Нажатие кнопки авторизации в программе");
+        ViewInteraction enterButton = onView(withId(ENTER_BUTTON_ID));
         enterButton.perform(click());
     }
 
-    public static void logOut() {
+    public void logOut() {
         Allure.step("Выход из аккаунта");
-        ViewInteraction userButton = onView(withId(R.id.authorization_image_button));
+        ViewInteraction userButton = onView(withId(AUTHORIZATION_IMAGE_BUTTON_ID));
         userButton.check(matches(isDisplayed()));
         userButton.perform(click());
 
-        ViewInteraction logOutButton = onView(withText("Log out"));
+        ViewInteraction logOutButton = onView(withText(R.string.log_out));
         logOutButton.check(matches(isDisplayed()));
         logOutButton.perform(click());
     }
 
-    public static void autorizationValid() {
+    public void autorizationValid() {
         Allure.step("Авторизация по валидным данным");
-        waitPageLoad(R.id.login_text_input_layout);
+        WaitPageSteps.waitPageLoad(LOGIN_TEXT_INPUT_LAYOUT_ID);
         loginTextInupt(Base.loginValid);
         passwordTextInput(Base.passwordValid);
         enterButtonLogIn();
-
     }
 
-    public static void waitPageLoad(final int viewId) {
-        onView(isRoot()).perform(Base.waitDisplayed(viewId, 5_000));
+
+
+    public void checkViewIsDisplayed(int viewId) {
+        Allure.step("Проверка отображения элемента с ID: " + viewId);
+        ViewInteraction view = onView(withId(viewId));
+        view.check(matches(isDisplayed()));
     }
 
+    public void checkViewWithContentDescriptionIsDisplayed(String contentDescription) {
+        Allure.step("Проверка отображения элемента с описанием: " + contentDescription);
+        onView(allOf(withContentDescription(contentDescription), isDisplayed()));    }
 }

@@ -107,13 +107,16 @@ object Utils {
             return onSuccess(body)
         } catch (e: ConnectException) {
             throw LostConnectException
-        } catch (e: IOException) {
-            throw ServerException
-        } catch (e: AuthorizationException) {
-            throw AuthorizationException
-        } catch (e: Exception) {
-            throw UnknownException
         }
+//        catch (e: IOException) {
+//            throw ServerException
+//        }
+        catch (e: AuthorizationException) {
+            throw AuthorizationException
+        }
+//        catch (e: Exception) {
+//            throw UnknownException
+//        }
     }
 
     fun fullUserNameGenerator(lastName: String, firstName: String, middleName: String): String {

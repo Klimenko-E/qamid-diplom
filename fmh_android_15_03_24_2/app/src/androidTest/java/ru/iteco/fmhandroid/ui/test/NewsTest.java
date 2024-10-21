@@ -1,32 +1,20 @@
 package ru.iteco.fmhandroid.ui.test;
 
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 
-import static androidx.test.espresso.action.ViewActions.replaceText;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
-import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
-import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import android.view.View;
+import android.view.ViewGroup;
 
-import static org.hamcrest.Matchers.allOf;
-
-import org.hamcrest.Matchers;
-
-import androidx.test.espresso.ViewInteraction;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
-import org.junit.After;
-
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 
 import java.util.UUID;
 
@@ -35,14 +23,12 @@ import io.qameta.allure.kotlin.Description;
 import io.qameta.allure.kotlin.Epic;
 import ru.iteco.fmhandroid.R;
 import ru.iteco.fmhandroid.ui.AppActivity;
-import ru.iteco.fmhandroid.ui.steps.authorizationPageSteps;
-import ru.iteco.fmhandroid.ui.steps.controlPanelPageSteps;
-import ru.iteco.fmhandroid.ui.steps.creatingNewsPageSteps;
-import ru.iteco.fmhandroid.ui.steps.mainPageSteps;
-import ru.iteco.fmhandroid.ui.steps.newsPageSteps;
-import ru.iteco.fmhandroid.ui.steps.Base;
-
-import static ru.iteco.fmhandroid.ui.steps.Base.withIndex;
+import ru.iteco.fmhandroid.ui.steps.AuthorizationPageSteps;
+import ru.iteco.fmhandroid.ui.steps.ControlPanelPageSteps;
+import ru.iteco.fmhandroid.ui.steps.CreatingNewsPageSteps;
+import ru.iteco.fmhandroid.ui.steps.MainPageSteps;
+import ru.iteco.fmhandroid.ui.steps.NewsPageSteps;
+import ru.iteco.fmhandroid.ui.steps.WaitPageSteps;
 
 @LargeTest
 //@RunWith(AndroidJUnit4.class)
@@ -52,27 +38,46 @@ import static ru.iteco.fmhandroid.ui.steps.Base.withIndex;
 
 public class NewsTest {
 
+    private static final int LOGIN_TEXT_INPUT_LAYOUT_ID =
+            R.id.login_text_input_layout;
+    private static final int CONTAINER_LIST_NEWS_ID =
+            R.id.container_list_news_include_on_fragment_main;
+    private static final int DELETE_NEWS_ITEM_VIEW_ID =
+            R.id.delete_news_item_image_view;
+    private static final int EDIT_NEWS_MATERIAL_BUTTON_ID =
+            R.id.edit_news_material_button;
+
+    private static final String TITLE_NEWS_ID = "Заголовок тестовой новости ";
+    private static final String DESCRIPTION_NEWS_ID = "Описание тестовой новости ";
+    private static final String SALARY = "Зарплата";
+    private static final String EXAMPLE_CATEGORY = "Объявление";
+
+
     @Rule
     public ActivityScenarioRule<AppActivity> mActivityScenarioRule =
             new ActivityScenarioRule<>(AppActivity.class);
 
+    private MainPageSteps mainPageSteps;
+    private NewsPageSteps newsPageSteps;
+    private ControlPanelPageSteps controlPanelPageSteps;
+    private CreatingNewsPageSteps creatingNewsPageSteps;
+
     @Before
     public void authorizationPageLoaded() {
+        AuthorizationPageSteps authorizationPageSteps = new AuthorizationPageSteps();
+        mainPageSteps = new MainPageSteps();
+        newsPageSteps = new NewsPageSteps();
+        controlPanelPageSteps = new ControlPanelPageSteps();
+        creatingNewsPageSteps = new CreatingNewsPageSteps();
         try {
-            authorizationPageSteps.waitPageLoad(R.id.login_text_input_layout);
-            ViewInteraction textView = onView(withId(R.id.login_text_input_layout));
-            textView.check(matches(isDisplayed()));
+            WaitPageSteps.waitPageLoad(LOGIN_TEXT_INPUT_LAYOUT_ID);
+            authorizationPageSteps.checkViewIsDisplayed(LOGIN_TEXT_INPUT_LAYOUT_ID);
         } catch (Exception e) {
             authorizationPageSteps.logOut();
         }
         authorizationPageSteps.autorizationValid();
-        authorizationPageSteps.waitPageLoad(R.id.container_list_news_include_on_fragment_main);
+        WaitPageSteps.waitPageLoad(CONTAINER_LIST_NEWS_ID);
 
-    }
-
-    @After
-    public void logOut() {
-        authorizationPageSteps.logOut();
     }
 
     @Test
@@ -80,25 +85,19 @@ public class NewsTest {
     public void creatingNewsTest() {
 
         String uniqueID = UUID.randomUUID().toString();
-        String newsTitle = "Заголовок тестовой новости " + uniqueID;
-        String newsDescription = "Описание тестовой новости " + uniqueID;
-
+        String newsTitle = TITLE_NEWS_ID + uniqueID;
+        String newsDescription = DESCRIPTION_NEWS_ID + uniqueID;
         mainPageSteps.clickButtonMainMenu();                               //Нажатие на кнопку главного меню
         mainPageSteps.clickButtonNewsMenu();                                //Нажатие кнопки "Новости" в главном меню
         newsPageSteps.clickButtonEditNews();                                //Открытие Control panel
-
         controlPanelPageSteps.clickButtonAddNews();                         //Открытие страницы добавления новости
-
-        creatingNewsPageSteps.titleSelect("Объявление");                    //Выбор категории новости
+        creatingNewsPageSteps.titleSelect(EXAMPLE_CATEGORY);                    //Выбор категории новости
         creatingNewsPageSteps.titleTextInput(newsTitle);                    //Добавление текста категории новости
         creatingNewsPageSteps.newsPublishDateInput();                       //Добавление даты публикации новости
         creatingNewsPageSteps.newsPublishTimeInput();                       //Добавление времени публикации новости
         creatingNewsPageSteps.descriptionTextInput(newsDescription);        //Добавление текста новости
         creatingNewsPageSteps.clickSaveButton();                            //Сохранение добавленной новости
-
-        onView(withText(newsTitle)).perform(scrollTo()).check(matches(isDisplayed()));
-        //onView(withText(newsTitle)).check(matches(isDisplayed()));          //Проверка
-        // authorizationPageSteps.logOut();                                    //Выход из аккаунта
+        newsPageSteps.checkExistRecyclerViewItem(newsDescription);
     }
 
     @Test
@@ -106,95 +105,103 @@ public class NewsTest {
     public void unfoldingNewsPageNews() {
 
         String uniqueID = UUID.randomUUID().toString();
-        String newsTitle = "Заголовок тестовой новости " + uniqueID;
-        String newsDescription = "Описание тестовой новости " + uniqueID;
+        String newsTitle = TITLE_NEWS_ID + uniqueID;
+        String newsDescription = DESCRIPTION_NEWS_ID + uniqueID;
 
         mainPageSteps.clickButtonMainMenu();                               //Нажатие на кнопку главного меню
         mainPageSteps.clickButtonNewsMenu();                                //Нажатие кнопки "Новости" в главном меню
         newsPageSteps.clickButtonEditNews();                                //Открытие Control panel
-
         controlPanelPageSteps.clickButtonAddNews();                         //Открытие страницы добавления новости
-
-        creatingNewsPageSteps.titleSelect("Объявление");                    //Выбор категории новости
+        creatingNewsPageSteps.titleSelect(EXAMPLE_CATEGORY);                    //Выбор категории новости
         creatingNewsPageSteps.titleTextInput(newsTitle);                    //Добавление текста категории новости
         creatingNewsPageSteps.newsPublishDateInput();                       //Добавление даты публикации новости
         creatingNewsPageSteps.newsPublishTimeInput();                       //Добавление времени публикации новости
         creatingNewsPageSteps.descriptionTextInput(newsDescription);        //Добавление текста новости
         creatingNewsPageSteps.clickSaveButton();                            //Сохранение добавленной новости
-        ViewInteraction newNews = onView(withText(newsTitle));              // Поиск категории новой новости
-        newNews.perform(click());                                           // Разворачивание новости
+        newsPageSteps.clickToRecyclerViewItem(newsDescription);
 
-        onView(withText(newsDescription)).perform(scrollTo()).check(matches(isDisplayed()));
-        //onView(withText(newsDescription)).check(matches(isDisplayed()));    //Проверка
-
-        //   authorizationPageSteps.logOut();                                    //Выход из аккаунта
     }
+
 
     @Test
     @Description("23 - Удаление новостей")
     public void deleteNews() {
 
+        String uniqueID = UUID.randomUUID().toString();
+        String newsTitle = TITLE_NEWS_ID + uniqueID;
+        String newsDescription = DESCRIPTION_NEWS_ID + uniqueID;
+
         mainPageSteps.clickButtonMainMenu();                               //Нажатие на кнопку главного меню
         mainPageSteps.clickButtonNewsMenu();                                //Нажатие кнопки "Новости" в главном меню
         newsPageSteps.clickButtonEditNews();                                //Открытие Control panel
+        controlPanelPageSteps.clickButtonAddNews();                         //Открытие страницы добавления новости
 
-        onView(withIndex(withId(R.id.delete_news_item_image_view), 0)).perform(click());
-        onView(withText("OK")).perform(click());
-        onView(withId(R.id.news_list_recycler_view)).check(matches(isDisplayed()));
+        creatingNewsPageSteps.titleSelect(EXAMPLE_CATEGORY);                    //Выбор категории новости
+        creatingNewsPageSteps.titleTextInput(newsTitle);                    //Добавление текста категории новости
+        creatingNewsPageSteps.newsPublishDateInput();                       //Добавление даты публикации новости
+        creatingNewsPageSteps.newsPublishTimeInput();                       //Добавление времени публикации новости
+        creatingNewsPageSteps.descriptionTextInput(newsDescription);        //Добавление текста новости
+        creatingNewsPageSteps.clickSaveButton();
 
+        newsPageSteps.scrollToElement(newsDescription).perform(new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isAssignableFrom(ViewGroup.class);
+            }
+
+            @Override
+            public String getDescription() {
+                return "perform action on child view with id " + DELETE_NEWS_ITEM_VIEW_ID;
+            }
+
+            @Override
+            public void perform(final UiController uiController, final View view) {
+                View childView = view.findViewById(DELETE_NEWS_ITEM_VIEW_ID);
+                if (childView != null) {
+                    childView.performClick();
+                }
+            }
+        });
+        newsPageSteps.confirmDeleteNews();
     }
+
 
     @Test
     @Description("23 - Переход со страницы Main на страницу News через ссылку All News")
     public void goToAllNews() {
-
-        onView(withId(R.id.all_news_text_view)).perform(click());
-        authorizationPageSteps.waitPageLoad(R.id.edit_news_material_button);
-        onView(withId(R.id.edit_news_material_button)).check(matches(isDisplayed()));
-
+        mainPageSteps.clickAllNews();
+        WaitPageSteps.waitPageLoad(EDIT_NEWS_MATERIAL_BUTTON_ID);
+        newsPageSteps.checkDisplayedView(EDIT_NEWS_MATERIAL_BUTTON_ID);
     }
+
 
     @Test
     @Description("31 - Создание новости с незаданной категорией")
     public void creatingNewsWithEmptyCategoryTest() {
 
         String uniqueID = UUID.randomUUID().toString();
-        String newsTitle = "Заголовок тестовой новости " + uniqueID;
-        String newsDescription = "Описание тестовой новости " + uniqueID;
+        String newsTitle = TITLE_NEWS_ID + uniqueID;
+        String newsDescription = DESCRIPTION_NEWS_ID + uniqueID;
 
         mainPageSteps.clickButtonMainMenu();                               //Нажатие на кнопку главного меню
         mainPageSteps.clickButtonNewsMenu();                                //Нажатие кнопки "Новости" в главном меню
         newsPageSteps.clickButtonEditNews();                                //Открытие Control panel
-
         controlPanelPageSteps.clickButtonAddNews();                         //Открытие страницы добавления новости
-
         creatingNewsPageSteps.titleTextInput(newsTitle);                    //Добавление текста категории новости
         creatingNewsPageSteps.newsPublishDateInput();                       //Добавление даты публикации новости
         creatingNewsPageSteps.newsPublishTimeInput();                       //Добавление времени публикации новости
         creatingNewsPageSteps.descriptionTextInput(newsDescription);        //Добавление текста новости
-        ViewInteraction saveButton = onView(withId(R.id.save_button));
-        saveButton.perform(click());
-
-        onView(Matchers.allOf(withContentDescription("Fill empty fields"), isDisplayed()));
-        onView(withId(R.id.cancel_button)).perform(click());
-        onView(withText("OK")).perform(click());
-
+        creatingNewsPageSteps.clickSaveButton();
+        creatingNewsPageSteps.clickCancelButton();
     }
 
     @Test
     @Description("26 - Сортировка новостей на странице Панель управления")
     public void sortNews() {
-
         mainPageSteps.clickButtonMainMenu();                               //Нажатие на кнопку главного меню
         mainPageSteps.clickButtonNewsMenu();                                //Нажатие кнопки "Новости" в главном меню
         newsPageSteps.clickFilterNewsButton();
-
-
-        onView(withId(R.id.news_item_category_text_auto_complete_text_view)).perform(click());
-        onView(withId(R.id.news_item_category_text_auto_complete_text_view)).perform(replaceText("Зарплата"));
-
-        onView(withId(R.id.filter_button)).perform(click());
-        onView(withId(R.id.all_news_cards_block_constraint_layout)).check(matches(isDisplayed()));
+        newsPageSteps.filterNewsByCategory(SALARY);
     }
 
 }

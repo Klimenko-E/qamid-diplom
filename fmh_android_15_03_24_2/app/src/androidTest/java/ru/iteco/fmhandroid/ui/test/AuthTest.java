@@ -1,5 +1,10 @@
 package ru.iteco.fmhandroid.ui.test;
 
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.LOGIN_TEXT_INPUT_LAYOUT_ID;
+import static ru.iteco.fmhandroid.ui.constants.StringConstants.LOGIN_AND_PASSWORD_CANNOT_BE_EMPTY_DESCRIPTION;
+import static ru.iteco.fmhandroid.ui.constants.StringConstants.SOMETHING_WENT_WRONG_DESCRIPTION;
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.CONTAINER_LIST_NEWS_FRAGMENT_ID;
+
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.filters.LargeTest;
 
@@ -11,7 +16,6 @@ import org.junit.runner.RunWith;
 import io.qameta.allure.android.runners.AllureAndroidJUnit4;
 import io.qameta.allure.kotlin.Description;
 import io.qameta.allure.kotlin.Epic;
-import ru.iteco.fmhandroid.R;
 import ru.iteco.fmhandroid.ui.AppActivity;
 import ru.iteco.fmhandroid.ui.steps.AuthorizationPageSteps;
 import ru.iteco.fmhandroid.ui.steps.Base;
@@ -21,11 +25,6 @@ import ru.iteco.fmhandroid.ui.steps.WaitPageSteps;
 @RunWith(AllureAndroidJUnit4.class)
 @Epic("Тестирование страницы авторизации")
 public class AuthTest {
-
-    private static final int LOGIN_TEXT_INPUT_LAYOUT_ID = R.id.login_text_input_layout;
-    private static final int CONTAINER_LIST_NEWS_INCLUDE_ON_FRAGMENT_MAIN_ID = R.id.container_list_news_include_on_fragment_main;
-    private static final String LOGIN_AND_PASSWORD_CANNOT_BE_EMPTY_DESCRIPTION = "Login and password cannot be empty";
-    private static final String SOMETHING_WENT_WRONG_DESCRIPTION = "Something went wrong. Try again later";
 
     @Rule
     public ActivityScenarioRule<AppActivity> mActivityScenarioRule =
@@ -48,8 +47,8 @@ public class AuthTest {
     @Description("3 - Авторизация в приложении по валидным данным")
     public void authPositiveTest() {
         authorizationPageSteps.autorizationValid();
-        WaitPageSteps.waitPageLoad(CONTAINER_LIST_NEWS_INCLUDE_ON_FRAGMENT_MAIN_ID);
-        authorizationPageSteps.checkViewIsDisplayed(CONTAINER_LIST_NEWS_INCLUDE_ON_FRAGMENT_MAIN_ID);
+        WaitPageSteps.waitPageLoad(CONTAINER_LIST_NEWS_FRAGMENT_ID);
+        authorizationPageSteps.checkViewIsDisplayed(CONTAINER_LIST_NEWS_FRAGMENT_ID);
         authorizationPageSteps.logOut();
     }
 

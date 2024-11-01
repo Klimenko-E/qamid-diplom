@@ -13,6 +13,11 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.AUTHORIZATION_IMAGE_BUTTON_ID;
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.ENTER_BUTTON_ID;
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.LOGIN_TEXT_INPUT_LAYOUT_ID;
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.PASSWORD_TEXT_INPUT_LAYOUT_ID;
+
 import android.widget.EditText;
 
 import androidx.test.espresso.ViewInteraction;
@@ -22,10 +27,6 @@ import ru.iteco.fmhandroid.R;
 
 public class AuthorizationPageSteps {
 
-    public static final int LOGIN_TEXT_INPUT_LAYOUT_ID = R.id.login_text_input_layout;
-    public static final int PASSWORD_TEXT_INPUT_LAYOUT_ID = R.id.password_text_input_layout;
-    public static final int ENTER_BUTTON_ID = R.id.enter_button;
-    public static final int AUTHORIZATION_IMAGE_BUTTON_ID = R.id.authorization_image_button;
 
     public void loginTextInupt(String login) {
         Allure.step("Ввод логина");
@@ -67,7 +68,6 @@ public class AuthorizationPageSteps {
         passwordTextInput(Base.passwordValid);
         enterButtonLogIn();
     }
-
 
 
     public void checkViewIsDisplayed(int viewId) {

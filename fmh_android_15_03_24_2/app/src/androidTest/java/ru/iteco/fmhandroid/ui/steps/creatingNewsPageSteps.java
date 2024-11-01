@@ -8,25 +8,28 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.BUTTON_1_ID;
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.CANCEL_BUTTON_ID;
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.NEWS_ITEM_CATEGORY_TEXT_ID;
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.NEWS_ITEM_DESCRIPTION_ID;
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.NEWS_ITEM_PUBLISH_DATE_ID;
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.NEWS_ITEM_PUBLISH_TIME_ID;
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.NEWS_ITEM_TITLE_TEXT_ID;
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.SAVE_BUTTON_ID;
+import static ru.iteco.fmhandroid.ui.constants.StringConstants.CONFIRM_TEXT;
+import static ru.iteco.fmhandroid.ui.constants.StringConstants.EXAMPLE_CONTENT_DESCRIPTION;
 
 import androidx.test.espresso.ViewInteraction;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
 import org.hamcrest.Matchers;
+import org.junit.Rule;
 
 import io.qameta.allure.kotlin.Allure;
 import ru.iteco.fmhandroid.R;
+import ru.iteco.fmhandroid.ui.AppActivity;
 
 public class CreatingNewsPageSteps {
-    private static final int CANCEL_BUTTON_ID = R.id.cancel_button;
-    private static final String EXAMPLE_CONTENT_DESCRIPTION = "Fill empty fields";
-    private static final String CONFIRM_TEXT = "OK";
-    public static final int NEWS_ITEM_CATEGORY_TEXT_ID = R.id.news_item_category_text_auto_complete_text_view;
-    public static final int NEWS_ITEM_TITLE_TEXT_ID = R.id.news_item_title_text_input_edit_text;
-    public static final int NEWS_ITEM_PUBLISH_DATE_ID = R.id.news_item_publish_date_text_input_edit_text;
-    public static final int BUTTON_1_ID = android.R.id.button1;
-    public static final int NEWS_ITEM_PUBLISH_TIME_ID = R.id.news_item_publish_time_text_input_edit_text;
-    public static final int NEWS_ITEM_DESCRIPTION_ID = R.id.news_item_description_text_input_edit_text;
-    public static final int SAVE_BUTTON_ID = R.id.save_button;
 
     public void titleSelect(String title) {
         Allure.step("Выбор категории новости");
@@ -62,6 +65,11 @@ public class CreatingNewsPageSteps {
         Allure.step("Добавление текста новости");
         ViewInteraction newsDescriptionText = onView(withId(NEWS_ITEM_DESCRIPTION_ID));
         newsDescriptionText.perform(replaceText(textDescription), closeSoftKeyboard());
+    }
+
+    public void checkErrorWindow() {
+        Allure.step("Проверка отображения модального окна");
+        onView(withText(R.string.empty_fields)).inRoot(new ToastMatcher());
     }
 
     public void clickSaveButton() {

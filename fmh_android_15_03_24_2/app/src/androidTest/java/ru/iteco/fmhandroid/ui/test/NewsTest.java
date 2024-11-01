@@ -2,6 +2,13 @@ package ru.iteco.fmhandroid.ui.test;
 
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.DELETE_NEWS_ITEM_VIEW_ID;
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.LOGIN_TEXT_INPUT_LAYOUT_ID;
+import static ru.iteco.fmhandroid.ui.constants.StringConstants.DESCRIPTION_NEWS_ID;
+import static ru.iteco.fmhandroid.ui.constants.StringConstants.EXAMPLE_CATEGORY;
+import static ru.iteco.fmhandroid.ui.constants.StringConstants.SALARY;
+import static ru.iteco.fmhandroid.ui.constants.StringConstants.TITLE_NEWS_ID;
+
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -38,19 +45,6 @@ import ru.iteco.fmhandroid.ui.steps.WaitPageSteps;
 
 public class NewsTest {
 
-    private static final int LOGIN_TEXT_INPUT_LAYOUT_ID =
-            R.id.login_text_input_layout;
-    private static final int CONTAINER_LIST_NEWS_ID =
-            R.id.container_list_news_include_on_fragment_main;
-    private static final int DELETE_NEWS_ITEM_VIEW_ID =
-            R.id.delete_news_item_image_view;
-    private static final int EDIT_NEWS_MATERIAL_BUTTON_ID =
-            R.id.edit_news_material_button;
-
-    private static final String TITLE_NEWS_ID = "Заголовок тестовой новости ";
-    private static final String DESCRIPTION_NEWS_ID = "Описание тестовой новости ";
-    private static final String SALARY = "Зарплата";
-    private static final String EXAMPLE_CATEGORY = "Объявление";
 
 
     @Rule
@@ -76,14 +70,12 @@ public class NewsTest {
             authorizationPageSteps.logOut();
         }
         authorizationPageSteps.autorizationValid();
-        WaitPageSteps.waitPageLoad(CONTAINER_LIST_NEWS_ID);
-
+        mainPageSteps.waitMainPageLoading();
     }
 
     @Test
     @Description("28 - Создание новости")
     public void creatingNewsTest() {
-
         String uniqueID = UUID.randomUUID().toString();
         String newsTitle = TITLE_NEWS_ID + uniqueID;
         String newsDescription = DESCRIPTION_NEWS_ID + uniqueID;
@@ -170,14 +162,13 @@ public class NewsTest {
     @Description("23 - Переход со страницы Main на страницу News через ссылку All News")
     public void goToAllNews() {
         mainPageSteps.clickAllNews();
-        WaitPageSteps.waitPageLoad(EDIT_NEWS_MATERIAL_BUTTON_ID);
-        newsPageSteps.checkDisplayedView(EDIT_NEWS_MATERIAL_BUTTON_ID);
+        newsPageSteps.waitPageLoading();
     }
 
 
     @Test
     @Description("31 - Создание новости с незаданной категорией")
-    public void creatingNewsWithEmptyCategoryTest() {
+    public void creatingNewsWithEmptyCategoryTest() throws Exception {
 
         String uniqueID = UUID.randomUUID().toString();
         String newsTitle = TITLE_NEWS_ID + uniqueID;
@@ -192,6 +183,7 @@ public class NewsTest {
         creatingNewsPageSteps.newsPublishTimeInput();                       //Добавление времени публикации новости
         creatingNewsPageSteps.descriptionTextInput(newsDescription);        //Добавление текста новости
         creatingNewsPageSteps.clickSaveButton();
+        creatingNewsPageSteps.checkErrorWindow();
         creatingNewsPageSteps.clickCancelButton();
     }
 

@@ -12,6 +12,13 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.core.AllOf.allOf;
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.ABOUT_BACK_IMAGE_BUTTON_ID;
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.ABOUT_PRIVACY_POLICY_VALUE_TEXT_VIEW_ID;
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.ABOUT_TERMS_OF_USE_VALUE_TEXT_VIEW_ID;
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.ABOUT_VERSION_TITLE_TEXT_VIEW_ID;
+import static ru.iteco.fmhandroid.ui.constants.IdConstants.CONTAINER_LIST_NEWS_FRAGMENT_ID;
+import static ru.iteco.fmhandroid.ui.constants.StringConstants.PRIVACY_POLICY_URL;
+import static ru.iteco.fmhandroid.ui.constants.StringConstants.TERMS_OF_USE_URL;
 
 import android.app.Instrumentation;
 import android.content.Intent;
@@ -22,18 +29,9 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
 
 import io.qameta.allure.kotlin.Allure;
-import ru.iteco.fmhandroid.R;
 
 public class AboutPageSteps {
 
-    private static final int ABOUT_VERSION_TITLE_TEXT_VIEW_ID = R.id.about_version_title_text_view;
-    private static final int ABOUT_PRIVACY_POLICY_VALUE_TEXT_VIEW_ID = R.id.about_privacy_policy_value_text_view;
-    private static final int ABOUT_TERMS_OF_USE_VALUE_TEXT_VIEW_ID = R.id.about_terms_of_use_value_text_view;
-    private static final int ABOUT_BACK_IMAGE_BUTTON_ID = R.id.about_back_image_button;
-
-    private static final String PRIVACY_POLICY_URL = "https://vhospice.org/#/privacy-policy/";
-    private static final String TERMS_OF_USE_URL = "https://vhospice.org/#/terms-of-use";
-    public static final int CONTAINER_LIST_NEWS_FRAGMENT_ID = R.id.container_list_news_include_on_fragment_main;
 
     public void clickButtonAboutBack() {
         Allure.step("Нажатие кнопки Назад на странице About");
@@ -48,6 +46,7 @@ public class AboutPageSteps {
     }
 
     public void checkPrivacyPolicyView() {
+        Allure.step("Проверка наличия и нажатия на ссылку Privacy Policy");
 
         ViewInteraction clickPrivacyPolicy = onView(
                 allOf(withId(ABOUT_PRIVACY_POLICY_VALUE_TEXT_VIEW_ID)));
@@ -64,7 +63,7 @@ public class AboutPageSteps {
 
     public void checkTermsOfUseView() {
 
-
+        Allure.step("Проверка наличия и нажатия на ссылку Terms Of Use");
         ViewInteraction clickPrivacyPolicy = onView(
                 allOf(withId(ABOUT_TERMS_OF_USE_VALUE_TEXT_VIEW_ID)));
         clickPrivacyPolicy.check(matches(isDisplayed()));

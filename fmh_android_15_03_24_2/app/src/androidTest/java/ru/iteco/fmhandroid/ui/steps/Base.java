@@ -49,6 +49,7 @@ public class Base {
         onView(isRoot()).perform(waitDisplayed(viewId, 15_000));
     }
 
+
     public static ViewAction waitDisplayed(final int viewId, final long millis) {
         return new ViewAction() {
             @Override
